@@ -1,0 +1,152 @@
+{
+    "database": "SQLite",
+    "tables": [
+        {
+            "name": "users",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        "PRIMARY KEY",
+                        "AUTOINCREMENT"
+                    ]
+                },
+                {
+                    "name": "username",
+                    "type": "VARCHAR",
+                    "constraints": [
+                        "UNIQUE",
+                        "INDEX"
+                    ]
+                },
+                {
+                    "name": "hashed_password",
+                    "type": "VARCHAR"
+                }
+            ],
+            "relationships": [
+                {
+                    "type": "many-to-many",
+                    "target": "ships",
+                    "through": "user_ships"
+                }
+            ]
+        },
+        {
+            "name": "ships",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        "PRIMARY KEY",
+                        "AUTOINCREMENT"
+                    ]
+                },
+                {
+                    "name": "name",
+                    "type": "VARCHAR",
+                    "constraints": [
+                        "INDEX"
+                    ]
+                },
+                {
+                    "name": "mmsi",
+                    "type": "VARCHAR",
+                    "constraints": [
+                        "UNIQUE",
+                        "INDEX"
+                    ]
+                },
+                {
+                    "name": "weight",
+                    "type": "FLOAT",
+                    "default": 1000.0
+                }
+            ],
+            "relationships": [
+                {
+                    "type": "one-to-many",
+                    "target": "telemetry",
+                    "back_populates": "ship"
+                },
+                {
+                    "type": "many-to-many",
+                    "target": "users",
+                    "through": "user_ships"
+                }
+            ]
+        },
+        {
+            "name": "user_ships",
+            "columns": [
+                {
+                    "name": "user_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        "FOREIGN KEY (users.id)"
+                    ]
+                },
+                {
+                    "name": "ship_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        "FOREIGN KEY (ships.id)"
+                    ]
+                }
+            ],
+            "notes": "Junction table for many-to-many relationship between users and ships"
+        },
+        {
+            "name": "telemetry",
+            "columns": [
+                {
+                    "name": "id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        "PRIMARY KEY",
+                        "AUTOINCREMENT"
+                    ]
+                },
+                {
+                    "name": "ship_id",
+                    "type": "INTEGER",
+                    "constraints": [
+                        "FOREIGN KEY (ships.id)"
+                    ]
+                },
+                {
+                    "name": "timestamp",
+                    "type": "DATETIME",
+                    "default": "UTC NOW"
+                },
+                {
+                    "name": "rpm",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "speed",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "fuel_consumption",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "latitude",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "longitude",
+                    "type": "FLOAT"
+                },
+                {
+                    "name": "heading",
+                    "type": "FLOAT",
+                    "default": 0.0
+                }
+            ]
+        }
+    ]
+}
